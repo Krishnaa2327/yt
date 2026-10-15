@@ -290,6 +290,8 @@ def _build_ydl_opts(fmt: str, quality: str, output_template: str, job_id: str) -
         "writethumbnail": False,
         "writeinfojson": False,
         "writesubtitles": False,
+        # Enable YouTube n-sig / EJS challenge solver (prevents "page needs to be reloaded" errors)
+        "remote_components": ["ejs:github"],
     }
 
     if JS_RUNTIMES:
