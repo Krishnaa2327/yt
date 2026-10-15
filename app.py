@@ -310,12 +310,22 @@ def _build_ydl_opts(fmt: str, quality: str, output_template: str, job_id: str) -
             }
         }
 
-    # Optional cookies file — the primary escape hatch for bot detection.
-    # Set YT_COOKIES_FILE=/path/to/cookies.txt in the environment.
+    # Optional cookies file or text — primary bypass for cloud IP bot detection.
     cookies_path = os.environ.get("YT_COOKIES_FILE", "").strip()
     if cookies_path and os.path.isfile(cookies_path):
         opts["cookiefile"] = cookies_path
         logger.info("Using cookies file: %s", cookies_path)
+    else:
+        cookies_text = os.environ.get("YT_COOKIES_TEXT", "").strip()
+        if cookies_text:
+            env_cookie_file = os.path.join(tempfile.gettempdir(), "yt_env_cookies.txt")
+            try:
+                with open(env_cookie_file, "w", encoding="utf-8") as f:
+                    f.write(cookies_text)
+                opts["cookiefile"] = env_cookie_file
+                logger.info("Using cookies from YT_COOKIES_TEXT")
+            except Exception as e:
+                logger.warning("Could not write YT_COOKIES_TEXT file: %s", e)
 
     return opts
 
