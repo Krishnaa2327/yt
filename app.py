@@ -371,11 +371,11 @@ def _find_output_file(tmp_dir: str, preferred_ext: str) -> str:
 # ---------------------------------------------------------------------------
 def _friendly_error(raw: str) -> str:
     lower = raw.lower()
-    if any(k in lower for k in ("sign in", "not a bot", "bot detection", "verify", "po token", "bot")):
+    if any(k in lower for k in ("sign in", "not a bot", "bot detection", "verify", "po token", "bot", "page needs to be reloaded", "unplayable")):
         return (
-            "YouTube blocked this cloud server IP (bot detection). "
-            "Please add your YouTube cookies to Render (Secret File: cookies.txt) "
-            "or run the app locally."
+            "YouTube blocked this cloud server IP (anti-bot check). "
+            "Cloud hosts like Render require YouTube cookies to download videos. "
+            "Please add your YouTube cookies via Render Secret Files (cookies.txt)."
         )
     if "403" in raw or "forbidden" in lower or "access denied" in lower:
         return (
