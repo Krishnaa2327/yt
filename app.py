@@ -371,11 +371,17 @@ def _find_output_file(tmp_dir: str, preferred_ext: str) -> str:
 # ---------------------------------------------------------------------------
 def _friendly_error(raw: str) -> str:
     lower = raw.lower()
-    if any(k in lower for k in ("sign in", "not a bot", "bot detection", "verify", "po token")):
+    if any(k in lower for k in ("sign in", "not a bot", "bot detection", "verify", "po token", "bot")):
         return (
-            "YouTube blocked this request (bot detection). "
-            "Set the YT_COOKIES_FILE environment variable with your browser cookies — "
-            "see the README for instructions."
+            "YouTube blocked this cloud server IP (bot detection). "
+            "Please add your YouTube cookies to Render (Secret File: cookies.txt) "
+            "or run the app locally."
+        )
+    if "403" in raw or "forbidden" in lower or "access denied" in lower:
+        return (
+            "YouTube blocked this request (HTTP 403: Forbidden). "
+            "Datacenter servers like Render require YouTube cookies to download videos. "
+            "Add your YouTube cookies via Render Secret Files (cookies.txt)."
         )
     if "private video" in lower or "video is private" in lower:
         return "This video is private."
@@ -403,7 +409,7 @@ def _friendly_error(raw: str) -> str:
         return "Network error during download. Please try again."
     if "region" in lower or "country" in lower:
         return "This video is not available in the server's region."
-    return "Download failed. The video may be unavailable, unsupported, or region-locked."
+    return f"Download failed: {raw[:150]}" if raw else "Download failed. The video may be unavailable or blocked by YouTube."
 
 
 # ---------------------------------------------------------------------------
