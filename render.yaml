@@ -1,0 +1,19 @@
+# Render deployment configuration
+# Free tier: Docker runtime, 512 MB RAM, sleeps after 15 min inactivity.
+# First request after sleep takes ~30–50 s (cold start) — normal behaviour.
+services:
+  - type: web
+    name: yt-downloader
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /
+    envVars:
+      # Optional: path to a Netscape-format cookies file uploaded as a secret file.
+      # See README for instructions. Bypasses YouTube bot detection on cloud IPs.
+      - key: YT_COOKIES_FILE
+        value: ""   # fill in via Render dashboard → Environment → Secret Files
+      - key: MAX_FILE_SIZE_MB
+        value: "300"
+      - key: MAX_CONCURRENT_JOBS
+        value: "2"

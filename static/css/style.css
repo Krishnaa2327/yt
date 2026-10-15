@@ -1,0 +1,511 @@
+/* ================================================================
+   YT Downloader — Stylesheet
+   Mobile-first · Dark theme · Minimal
+   ================================================================ */
+
+/* ── Custom properties ──────────────────────────────────────────── */
+:root {
+    /* Background layers */
+    --bg:           #080810;
+    --surface:      #0f0f1a;
+    --surface-2:    #16162a;
+    --border:       #212135;
+    --border-active:#2e2e50;
+
+    /* Accent: electric cyan */
+    --accent:       #00d4ff;
+    --accent-dim:   #00b8e0;
+    --accent-glow:  rgba(0, 212, 255, 0.10);
+
+    /* Text */
+    --text:         #e2e2f0;
+    --text-muted:   #6060a0;
+    --text-faint:   #353558;
+
+    /* Semantic */
+    --error:        #ff4466;
+    --error-bg:     rgba(255, 68, 102, 0.07);
+    --error-border: rgba(255, 68, 102, 0.22);
+    --success:      #00d4a0;
+    --success-glow: rgba(0, 212, 160, 0.10);
+
+    /* Shape */
+    --r-sm:  8px;
+    --r-md:  12px;
+    --r-lg:  16px;
+
+    /* Motion */
+    --ease:  0.16s ease;
+
+    /* Font */
+    --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: env(safe-area-inset-top, 24px) 16px env(safe-area-inset-bottom, 24px);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────── */
+.container {
+    width: 100%;
+    max-width: 420px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 8px 0 16px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.app-header {
+    text-align: center;
+    padding-top: 8px;
+}
+
+.app-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1.1;
+}
+
+.app-subtitle {
+    margin-top: 6px;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+}
+
+/* ── Main ───────────────────────────────────────────────────────── */
+.app-main {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+/* ── Labels ─────────────────────────────────────────────────────── */
+.field-label {
+    display: block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.09em;
+    color: var(--text-muted);
+    margin-bottom: 9px;
+}
+
+/* ── URL Input ──────────────────────────────────────────────────── */
+.input-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+}
+
+.url-input {
+    flex: 1;
+    min-width: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 1rem;          /* ≥16px prevents iOS auto-zoom */
+    line-height: 1.4;
+    padding: 13px 15px;
+    outline: none;
+    transition: border-color var(--ease), box-shadow var(--ease);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.url-input::placeholder {
+    color: var(--text-faint);
+}
+
+.url-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.url-input.invalid {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px var(--error-bg);
+}
+
+.paste-btn {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--text-muted);
+    font-family: var(--font);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    min-height: 50px;          /* comfortable tap target */
+    transition: border-color var(--ease), color var(--ease), background var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.paste-btn:hover,
+.paste-btn:focus-visible {
+    border-color: var(--border-active);
+    color: var(--text);
+    outline: none;
+}
+
+.paste-btn:active {
+    transform: scale(0.96);
+}
+
+.field-error {
+    margin-top: 7px;
+    font-size: 0.8125rem;
+    color: var(--error);
+    min-height: 1.2em;
+    line-height: 1.4;
+}
+
+/* ── Format Buttons ─────────────────────────────────────────────── */
+.format-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.format-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    color: var(--text-muted);
+    font-family: var(--font);
+    cursor: pointer;
+    padding: 18px 12px 14px;
+    transition: border-color var(--ease), color var(--ease), background var(--ease), transform var(--ease);
+    min-height: 88px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.format-btn:hover {
+    border-color: var(--border-active);
+    color: var(--text);
+}
+
+.format-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+    color: var(--accent);
+}
+
+.format-btn:active {
+    transform: scale(0.96);
+}
+
+.format-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.04);
+    margin-bottom: 2px;
+    transition: background var(--ease);
+}
+
+.format-btn.active .format-icon {
+    background: var(--accent-glow);
+}
+
+.format-name {
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.format-desc {
+    font-size: 0.6875rem;
+    opacity: 0.65;
+    font-weight: 400;
+}
+
+/* ── Quality Buttons ────────────────────────────────────────────── */
+.quality-group {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.quality-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-sm);
+    color: var(--text-muted);
+    font-family: var(--font);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 11px 4px;
+    cursor: pointer;
+    transition: border-color var(--ease), color var(--ease), background var(--ease), transform var(--ease);
+    min-height: 42px;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.quality-btn:hover {
+    border-color: var(--border-active);
+    color: var(--text);
+}
+
+.quality-btn.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+}
+
+.quality-btn:active {
+    transform: scale(0.95);
+}
+
+.quality-note {
+    margin-top: 8px;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    line-height: 1.5;
+}
+
+/* ── Download Button ────────────────────────────────────────────── */
+.download-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    width: 100%;
+    background: var(--accent);
+    border: none;
+    border-radius: var(--r-md);
+    color: #000;
+    font-family: var(--font);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    padding: 16px;
+    cursor: pointer;
+    min-height: 52px;
+    transition: background var(--ease), transform var(--ease), box-shadow var(--ease), opacity var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.download-btn:hover:not(:disabled) {
+    background: var(--accent-dim);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(0, 212, 255, 0.22);
+}
+
+.download-btn:active:not(:disabled) {
+    transform: scale(0.98);
+    box-shadow: none;
+}
+
+.download-btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-icon {
+    flex-shrink: 0;
+    transition: opacity var(--ease);
+}
+
+.download-btn:disabled .btn-icon {
+    opacity: 0.5;
+}
+
+/* ── Spinner (shared) ───────────────────────────────────────────── */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.btn-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0, 0, 0, 0.25);
+    border-top-color: #000;
+    border-radius: 50%;
+    animation: spin 0.65s linear infinite;
+    flex-shrink: 0;
+}
+
+.status-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--accent-glow);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.65s linear infinite;
+    flex-shrink: 0;
+}
+
+/* ── Status Card ────────────────────────────────────────────────── */
+.status-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    padding: 14px 16px;
+}
+
+.status-text {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* ── Error Card ─────────────────────────────────────────────────── */
+.error-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    border-radius: var(--r-md);
+    padding: 14px 16px;
+}
+
+.error-icon {
+    color: var(--error);
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.error-text {
+    font-size: 0.875rem;
+    color: var(--error);
+    line-height: 1.55;
+}
+
+/* ── Save Button ────────────────────────────────────────────────── */
+.save-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    background: transparent;
+    border: 1.5px solid var(--success);
+    border-radius: var(--r-md);
+    color: var(--success);
+    font-family: var(--font);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    padding: 16px;
+    cursor: pointer;
+    text-decoration: none;
+    min-height: 52px;
+    text-align: center;
+    transition: background var(--ease), transform var(--ease), box-shadow var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.save-btn:hover {
+    background: var(--success-glow);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(0, 212, 160, 0.15);
+}
+
+.save-btn:active {
+    transform: scale(0.98);
+    box-shadow: none;
+}
+
+/* ── Reset Button ───────────────────────────────────────────────── */
+.reset-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-family: var(--font);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    transition: color var(--ease);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.reset-btn:hover {
+    color: var(--text);
+}
+
+/* ── Footer ─────────────────────────────────────────────────────── */
+.app-footer {
+    text-align: center;
+    padding-bottom: 8px;
+}
+
+.app-footer p {
+    font-size: 0.6875rem;
+    color: var(--text-faint);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+}
+
+/* ── Utility ────────────────────────────────────────────────────── */
+.hidden {
+    display: none !important;
+}
+
+/* ── Desktop adjustments ────────────────────────────────────────── */
+@media (min-width: 600px) {
+    body {
+        padding: 40px 24px;
+    }
+
+    .container {
+        gap: 32px;
+    }
+
+    .app-title {
+        font-size: 1.625rem;
+    }
+}

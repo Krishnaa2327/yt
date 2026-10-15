@@ -1,0 +1,8 @@
+# YT Downloader dependencies
+# Keep yt-dlp updated frequently — YouTube changes its extraction API often.
+# Run: pip install -U yt-dlp
+
+Flask==3.1.0
+yt-dlp>=2025.1.1
+gunicorn==23.0.0
+imageio-ffmpeg>=0.5.1
