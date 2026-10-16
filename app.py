@@ -312,20 +312,37 @@ def _build_ydl_opts(fmt: str, quality: str, output_template: str, job_id: str) -
             }
         }
 
-    # Optional cookies file or text — primary bypass for cloud IP bot detection.
+    # Cookie discovery — checks explicit env var, Render Secret File, local cookies.txt, or env text
     cookies_path = os.environ.get("YT_COOKIES_FILE", "").strip()
+    if not cookies_path or not os.path.isfile(cookies_path):
+        # Auto-detect Render Secret File mount location
+        if os.path.isfile("/etc/secrets/cookies.txt"):
+            cookies_path = "/etc/secrets/cookies.txt"
+        else:
+            # Auto-detect local directory cookies.txt
+            local_candidate = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cookies.txt")
+            if os.path.isfile(local_candidate):
+                cookies_path = local_candidate
+
     if cookies_path and os.path.isfile(cookies_path):
         opts["cookiefile"] = cookies_path
         logger.info("Using cookies file: %s", cookies_path)
     else:
         cookies_text = os.environ.get("YT_COOKIES_TEXT", "").strip()
         if cookies_text:
+            # Handle escaped newlines or tabs from cloud dashboard text areas
+            if "\\n" in cookies_text and "\n" not in cookies_text:
+                cookies_text = cookies_text.replace("\\n", "\n")
+            if "\\t" in cookies_text and "\t" not in cookies_text:
+                cookies_text = cookies_text.replace("\\t", "\t")
+            cookies_text = cookies_text.replace("\r\n", "\n")
+
             env_cookie_file = os.path.join(tempfile.gettempdir(), "yt_env_cookies.txt")
             try:
                 with open(env_cookie_file, "w", encoding="utf-8") as f:
                     f.write(cookies_text)
                 opts["cookiefile"] = env_cookie_file
-                logger.info("Using cookies from YT_COOKIES_TEXT")
+                logger.info("Using cookies from YT_COOKIES_TEXT (%d bytes)", len(cookies_text))
             except Exception as e:
                 logger.warning("Could not write YT_COOKIES_TEXT file: %s", e)
 
@@ -482,14 +499,16 @@ def _download_worker(job_id: str, url: str, fmt: str, quality: str, tmp_dir: str
                 )
             shutil.rmtree(tmp_dir, ignore_errors=True)
 
-        except Exception:
-            logger.exception("Unexpected error in download worker job=%s", job_id)
+        except Exception as exc:
+            raw = str(exc)
+            friendly = _friendly_error(raw)
+            logger.exception("Unexpected error in download worker job=%s: %s", job_id, raw)
             with _jobs_lock:
                 if _jobs.get(job_id, {}).get("status") not in ("done", "error"):
                     _jobs[job_id].update(
                         {
                             "status": "error",
-                            "error": "An unexpected error occurred. Please try again.",
+                            "error": friendly,
                         }
                     )
             shutil.rmtree(tmp_dir, ignore_errors=True)
