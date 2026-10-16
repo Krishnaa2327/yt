@@ -325,8 +325,18 @@ def _build_ydl_opts(fmt: str, quality: str, output_template: str, job_id: str) -
                 cookies_path = local_candidate
 
     if cookies_path and os.path.isfile(cookies_path):
-        opts["cookiefile"] = cookies_path
-        logger.info("Using cookies file: %s", cookies_path)
+        # Render Secret Files (/etc/secrets/cookies.txt) are mounted as read-only.
+        # yt-dlp attempts to write updated session cookies back to cookiefile,
+        # which causes [Errno 30] Read-only file system.
+        # Copy to a writable temp location to allow yt-dlp to read and update freely.
+        writable_cookie_file = os.path.join(tempfile.gettempdir(), "yt_active_cookies.txt")
+        try:
+            shutil.copyfile(cookies_path, writable_cookie_file)
+            opts["cookiefile"] = writable_cookie_file
+            logger.info("Using cookies file copied to writable temp: %s", writable_cookie_file)
+        except Exception as e:
+            logger.warning("Could not copy cookies file to temp: %s", e)
+            opts["cookiefile"] = cookies_path
     else:
         cookies_text = os.environ.get("YT_COOKIES_TEXT", "").strip()
         if cookies_text:
